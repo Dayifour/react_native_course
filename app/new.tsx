@@ -2,12 +2,20 @@ import { PlantlyButton } from "@/components/PlantlyButton";
 import { PlantlyImage } from "@/components/PlantlyImage";
 import { usePlantStore } from "@/store/plantsSrore";
 import { theme } from "@/theme";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 export default function NewScreen() {
+  const [imageUri, setImageUri] = useState<string>();
   const [name, setName] = useState<string>();
   const [days, setDays] = useState<string>();
   const addPlant = usePlantStore((state) => state.addPlant);
@@ -36,6 +44,22 @@ export default function NewScreen() {
     router.navigate("/");
   };
 
+  const handleChooseImage = async () => {
+    if (Platform.OS === "web") {
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+    console.log(JSON.stringify(result, null, ""));
+  };
+
   return (
     // We can use a ScrollView to prevent the keyboard from covering the inputs on smaller devices
     // We can also set keyboardShouldPersistTaps to "handled" to allow tapping the button while the keyboard is open
@@ -45,9 +69,14 @@ export default function NewScreen() {
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
     >
-      <View style={styles.centered}>
-        <PlantlyImage />
-      </View>
+      {/*TouchableOpacity is used to capture taps and provide feedback */}
+      <TouchableOpacity
+        style={styles.centered}
+        activeOpacity={0.8}
+        onPress={handleChooseImage}
+      >
+        <PlantlyImage imageUri={imageUri} />
+      </TouchableOpacity>
       <Text style={styles.label}>Name</Text>
       <TextInput
         value={name}
@@ -93,5 +122,6 @@ const styles = StyleSheet.create({
   },
   centered: {
     alignItems: "center",
+    marginBottom: 24,
   },
 });

@@ -1,6 +1,12 @@
 import { Image, useWindowDimensions } from "react-native";
 
-export function PlantlyImage({ size }: { size?: number }) {
+export function PlantlyImage({
+  size,
+  imageUri,
+}: {
+  size?: number;
+  imageUri?: string;
+}) {
   //useWindowDimensions to get the width of the screen
   //for adaptive image sizing
   const { width } = useWindowDimensions();
@@ -8,8 +14,8 @@ export function PlantlyImage({ size }: { size?: number }) {
   //require() is  important beacause it allows React Native to bundle the image correctly
   return (
     <Image
-      source={require("@/assets/plantly.png")}
-      style={{ width: imageSize, height: imageSize }}
+      source={imageUri ? { uri: imageUri } : require("@/assets/plantly.png")}
+      style={{ width: imageSize, height: imageSize, borderRadius: 6 }}
     />
   );
 }
