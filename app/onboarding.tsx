@@ -1,5 +1,5 @@
 import { PlantlyButton } from "@/components/PlantlyButton";
-import { PlantlyImage } from "@/components/plantlyImage";
+import { PlantlyImage } from "@/components/PlantlyImage";
 import { useUserStore } from "@/store/userStore";
 import { theme } from "@/theme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,7 +25,7 @@ export default function OnboardingScreen() {
       <StatusBar style="light" />
       <View>
         <Text style={styles.heading}>Plantly</Text>
-        <Text style={styles.taglinge}>
+        <Text style={styles.tagline}>
           Keep your plants healthy and hydrated
         </Text>
       </View>
@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     alignItems: "center",
+    paddingVertical: 48,
+    paddingHorizontal: 24,
   },
   heading: {
     fontSize: 48,
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
   },
-  taglinge: {
+  tagline: {
     fontSize: 24,
     color: theme.colorWhite,
     textAlign: "center",
