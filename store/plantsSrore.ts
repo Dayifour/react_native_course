@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -8,6 +8,7 @@ export type PlantType = {
   name: string;
   wateringFrequencyDays: number;
   lastWateredAtTimestamp?: number;
+  imageUri?: string;
 };
 
 type PlantsState = {
@@ -17,7 +18,7 @@ type PlantsState = {
     name: string,
     wateringFrequencyDays: number,
     imageUri?: string,
-  ) => void;
+  ) => Promise<void>;
   removePlant: (plantId: string) => void;
   waterPlant: (plantId: string) => void;
 };
@@ -32,18 +33,18 @@ export const usePlantStore = create(
         wateringFrequencyDays: number,
         imageUri?: string,
       ) => {
-        const savedImageUri =
-          FileSystem.documentDirectory +
-          `new ${new Date().getTime()}-${imageUri?.split("/").slice(-1)[0]}`;
-        console.log(savedImageUri);
-
+        let newImageUri: string | undefined = undefined;
         if (imageUri) {
-          await FileSystem.copyAsync({
-            from: imageUri,
-            to: savedImageUri,
-          });
+          const fileName = `new_${Date.now()}-${imageUri.split("/").slice(-1)[0]}`;
+          const destinationFile = new File(Paths.document, fileName);
+          const sourceFile = new File(imageUri);
+
+          sourceFile.copy(destinationFile);
+          console.log(destinationFile.uri);
+
+          newImageUri = destinationFile.uri;
         }
-        return set((state) => {
+        set((state) => {
           return {
             ...state,
             nextId: state.nextId + 1,
@@ -52,6 +53,7 @@ export const usePlantStore = create(
                 id: String(state.nextId),
                 name,
                 wateringFrequencyDays,
+                imageUri: newImageUri ? newImageUri : undefined,
               },
               ...state.plants,
             ],
@@ -59,7 +61,7 @@ export const usePlantStore = create(
         });
       },
       removePlant: (plantId: string) => {
-        return set((state) => {
+        set((state) => {
           return {
             ...state,
             plants: state.plants.filter((plant) => plant.id !== plantId),
@@ -67,7 +69,7 @@ export const usePlantStore = create(
         });
       },
       waterPlant: (plantId: string) => {
-        return set((state) => {
+        set((state) => {
           return {
             ...state,
             plants: state.plants.map((plant) => {
