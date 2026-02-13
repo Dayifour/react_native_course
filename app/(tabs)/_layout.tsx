@@ -22,6 +22,7 @@ export default function Layout() {
         name="(home)"
         options={{
           title: "Home",
+          headerShown: false,
           tabBarShowLabel: false,
           tabBarIcon: ({ size, color }) => (
             <Entypo name="leaf" size={size} color={color} />
@@ -32,8 +33,8 @@ export default function Layout() {
         name="profile"
         options={{
           title: "Profile",
-          tabBarShowLabel: false,
           headerShown: false,
+          tabBarShowLabel: false,
           tabBarIcon: ({ size, color }) => (
             <Feather name="user" size={size} color={color} />
           ),
