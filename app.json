@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -35,7 +35,7 @@
         "expo-font",
         {
           "fonts": [
-            "node_modules/@expo-google-fonts/caveat/Caveat_400Regular.ttf"
+            "node_modules/@expo-google-fonts/caveat/400Regular/Caveat_400Regular.ttf"
           ]
         }
       ],
